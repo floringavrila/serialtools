@@ -4,7 +4,7 @@ _A serial port logger JAVA Swing application_
 
 This application was initially developed for logging data sent from Arduino.
 
-It is a Swing application having its backend based on [jSerialComm] (https://github.com/Fazecast/jSerialComm)
+It is a Swing application having its backend based on [jSerialComm](https://github.com/Fazecast/jSerialComm).
 
 ## Usage
 
