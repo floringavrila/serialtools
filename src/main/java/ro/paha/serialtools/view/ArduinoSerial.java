@@ -3,7 +3,6 @@ package ro.paha.serialtools.view;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.Properties;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -18,9 +17,6 @@ import ro.paha.serialtools.delimiter.LineFeed;
 import ro.paha.serialtools.repository.Console;
 import ro.paha.serialtools.repository.Repository;
 
-/**
- * @author florin
- */
 public class ArduinoSerial {
 
     private JFrame mainFrame;
@@ -68,7 +64,7 @@ public class ArduinoSerial {
     }
 
     private JFrame setUpMainWindow() {
-        JFrame mainFrame = new JFrame("USB Serial logger");
+        JFrame mainFrame = new JFrame("Java Serial Tools");
         mainFrame.getContentPane().setLayout(new GridLayout(0, 1, 0, 0));
         mainFrame.setPreferredSize(new Dimension(715, 600));
         mainFrame.setResizable(false);
