@@ -17,7 +17,6 @@ public class ConnectToPort extends AbstractAction {
 
     private static String stringConnect = "Connect";
     private static String stringDisconnect = "Disconnect";
-//    private MainFrame frame;
 
     public ConnectToPort(Connector delegate, Repository repository, Delimiter delimiter, PortSettingsPanel panel) {
         super(stringConnect);

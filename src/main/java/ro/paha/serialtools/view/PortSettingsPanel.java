@@ -3,7 +3,6 @@ package ro.paha.serialtools.view;
 import java.awt.*;
 import javax.swing.*;
 
-import com.sun.org.apache.bcel.internal.generic.ATHROW;
 import ro.paha.serialtools.Connector;
 import ro.paha.serialtools.Port;
 import ro.paha.serialtools.delimiter.Delimiter;
