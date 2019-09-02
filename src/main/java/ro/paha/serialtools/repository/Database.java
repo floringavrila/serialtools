@@ -1,6 +1,5 @@
 package ro.paha.serialtools.repository;
 
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -15,12 +14,11 @@ public class Database implements Repository {
     @Override
     public boolean open() {
         try {
-            Properties props =  readConfigFile();
+            Properties props = readConfigFile();
             String driver = props.getProperty("jdbc.driver");
             String url = props.getProperty("jdbc.url");
             String username = props.getProperty("jdbc.username");
             String password = props.getProperty("jdbc.password");
-System.out.println(props.toString());
             Class.forName(driver);
             dbConnection = DriverManager.getConnection(url, username, password);
         } catch (Exception e) {
@@ -29,19 +27,6 @@ System.out.println(props.toString());
         }
 
         return true;
-    }
-
-    private Properties readConfigFile () throws Exception{
-        Properties props = new Properties();
-         InputStream in = getClass()
-                .getClassLoader().getResourceAsStream("db.properties");
-        if(in==null){
-            throw new Exception("Sorry, unable to find db.properties");
-        }
-        props.load(in);
-        in.close();
-
-        return props;
     }
 
     public void write(String message) {
@@ -67,5 +52,18 @@ System.out.println(props.toString());
         }
 
         return true;
+    }
+
+    private Properties readConfigFile() throws Exception {
+        Properties props = new Properties();
+        InputStream in = getClass()
+                .getClassLoader().getResourceAsStream("db.properties");
+        if (in == null) {
+            throw new Exception("Sorry, unable to find db.properties");
+        }
+        props.load(in);
+        in.close();
+
+        return props;
     }
 }
