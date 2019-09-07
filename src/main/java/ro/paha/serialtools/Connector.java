@@ -43,11 +43,12 @@ public class Connector {
                 repository
         );
         comPort.addDataListener(listener);
+        port.setComPort(comPort);
         connections.add(port);
     }
 
     public void closePort(Port port) {
-        SerialPort comPort = SerialPort.getCommPort(port.getId());
+        SerialPort comPort = port.getComPort();
         comPort.removeDataListener();
         comPort.closePort();
         connections.remove(port);

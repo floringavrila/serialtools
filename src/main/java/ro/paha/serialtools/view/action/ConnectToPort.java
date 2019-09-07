@@ -29,6 +29,7 @@ public class ConnectToPort extends AbstractAction {
     @Override
     public void actionPerformed(ActionEvent e) {
         JToggleButton toggleButton = (JToggleButton) e.getSource();
+        boolean isComplete = false;
         try {
             if (toggleButton.isSelected()) {
                 connectToPort();
@@ -38,6 +39,7 @@ public class ConnectToPort extends AbstractAction {
                 toggleButton.setText(stringConnect);
             }
             settingsPanel.toggleDropDowns(!toggleButton.isSelected());
+            isComplete = true;
         } catch (FormException exception) {
             JOptionPane.showMessageDialog(settingsPanel.getPanel(), "" + exception.getMessage(),
                     "Connection error", JOptionPane.ERROR_MESSAGE);
@@ -46,7 +48,9 @@ public class ConnectToPort extends AbstractAction {
             JOptionPane.showMessageDialog(settingsPanel.getPanel(), "" + exception.getMessage(),
                     "Connection error", JOptionPane.ERROR_MESSAGE);
         } finally {
-            toggleButton.setSelected(!toggleButton.isSelected());
+            if (!isComplete) {
+                toggleButton.setSelected(!toggleButton.isSelected());
+            }
         }
     }
 
