@@ -4,6 +4,7 @@ package ro.paha.serialtools;
 import com.fazecast.jSerialComm.SerialPort;
 import ro.paha.serialtools.delimiter.Delimiter;
 import ro.paha.serialtools.repository.Repository;
+import ro.paha.serialtools.view.PortOpenException;
 
 import java.util.ArrayList;
 
@@ -26,7 +27,7 @@ public class Connector {
         return ports;
     }
 
-    public void connectToPort(Port port, Repository repository, Delimiter delimiterSequence) {
+    public void connectToPort(Port port, Repository repository, Delimiter delimiterSequence) throws PortOpenException {
         SerialPort comPort = SerialPort.getCommPort(port.getId());
         comPort.setComPortParameters(
                 port.getBaudRate(),
@@ -35,16 +36,19 @@ public class Connector {
                 port.getParity()
         );
         comPort.setFlowControl(SerialPort.FLOW_CONTROL_XONXOFF_IN_ENABLED | SerialPort.FLOW_CONTROL_XONXOFF_OUT_ENABLED);
-        comPort.openPort();
+        if (comPort.openPort()) {
+            // each port will have it's own listener
+            DataReceivedListener listener = new DataReceivedListener(
+                    delimiterSequence,
+                    repository
+            );
+            comPort.addDataListener(listener);
+            port.setComPort(comPort);
+            connections.add(port);
+        } else {
+            throw new PortOpenException("Error opening " + port.getName() + ".(Port busy)");
+        }
 
-        // each port will have it's own listener
-        DataReceivedListener listener = new DataReceivedListener(
-                delimiterSequence,
-                repository
-        );
-        comPort.addDataListener(listener);
-        port.setComPort(comPort);
-        connections.add(port);
     }
 
     public void closePort(Port port) {

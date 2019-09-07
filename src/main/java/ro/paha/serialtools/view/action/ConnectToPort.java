@@ -4,6 +4,7 @@ import ro.paha.serialtools.Connector;
 import ro.paha.serialtools.delimiter.Delimiter;
 import ro.paha.serialtools.repository.Repository;
 import ro.paha.serialtools.view.FormException;
+import ro.paha.serialtools.view.PortOpenException;
 import ro.paha.serialtools.view.PortSettingsPanel;
 
 import javax.swing.*;
@@ -54,7 +55,7 @@ public class ConnectToPort extends AbstractAction {
         }
     }
 
-    private void connectToPort() {
+    private void connectToPort() throws PortOpenException {
         conector.connectToPort(settingsPanel.getSelectedPort(), repository, delimiter);
     }
 
