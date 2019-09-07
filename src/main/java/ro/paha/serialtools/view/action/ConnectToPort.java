@@ -4,6 +4,7 @@ import ro.paha.serialtools.Connector;
 import ro.paha.serialtools.delimiter.Delimiter;
 import ro.paha.serialtools.repository.Repository;
 import ro.paha.serialtools.view.FormException;
+import ro.paha.serialtools.view.PortOpenException;
 import ro.paha.serialtools.view.PortSettingsPanel;
 
 import javax.swing.*;
@@ -29,6 +30,7 @@ public class ConnectToPort extends AbstractAction {
     @Override
     public void actionPerformed(ActionEvent e) {
         JToggleButton toggleButton = (JToggleButton) e.getSource();
+        boolean isComplete = false;
         try {
             if (toggleButton.isSelected()) {
                 connectToPort();
@@ -38,6 +40,7 @@ public class ConnectToPort extends AbstractAction {
                 toggleButton.setText(stringConnect);
             }
             settingsPanel.toggleDropDowns(!toggleButton.isSelected());
+            isComplete = true;
         } catch (FormException exception) {
             JOptionPane.showMessageDialog(settingsPanel.getPanel(), "" + exception.getMessage(),
                     "Connection error", JOptionPane.ERROR_MESSAGE);
@@ -46,11 +49,13 @@ public class ConnectToPort extends AbstractAction {
             JOptionPane.showMessageDialog(settingsPanel.getPanel(), "" + exception.getMessage(),
                     "Connection error", JOptionPane.ERROR_MESSAGE);
         } finally {
-            toggleButton.setSelected(!toggleButton.isSelected());
+            if (!isComplete) {
+                toggleButton.setSelected(!toggleButton.isSelected());
+            }
         }
     }
 
-    private void connectToPort() {
+    private void connectToPort() throws PortOpenException {
         conector.connectToPort(settingsPanel.getSelectedPort(), repository, delimiter);
     }
 
