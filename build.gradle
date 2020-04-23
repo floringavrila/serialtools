@@ -15,12 +15,13 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     compile 'com.fazecast:jSerialComm:[2.0.0,3.0.0)'
     compile 'mysql:mysql-connector-java:8.0.17'
+    compile "com.beust:jcommander:1.72"
 }
 
 jar {
    manifest {
       attributes (
-              'Main-Class': 'ro.paha.serialtools.view.ArduinoSerial'
+              'Main-Class': 'ro.paha.serialtools.Dispatcher'
       )
    }
    from configurations.runtime.collect { zipTree(it) }

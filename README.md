@@ -1,4 +1,4 @@
-# SerialTools
+# Java SerialTools
 
 _A serial port logger JAVA Swing application_
 
