@@ -10,7 +10,6 @@ public class Dispatcher {
     private static Class<Console> consoleApp = Console.class;
 
     public static void main(String[] args) {
-
         try {
             if (args.length > 0) {
                 consoleApp.getMethod("main", String[].class)

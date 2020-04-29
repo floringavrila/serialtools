@@ -4,7 +4,7 @@ import java.awt.*;
 import javax.swing.*;
 
 import ro.paha.serialtools.Connector;
-import ro.paha.serialtools.Port;
+import ro.paha.serialtools.ComPort;
 import ro.paha.serialtools.delimiter.Delimiter;
 import ro.paha.serialtools.repository.Repository;
 import ro.paha.serialtools.view.action.ConnectToPort;
@@ -15,7 +15,7 @@ public final class PortSettingsPanel {
 
     private Connector connector;
     private JPanel parentPanel;
-    private JComboBox<Port> portSelection;
+    private JComboBox<ComPort> portSelection;
     private JComboBox<BaudRate> baudRateSelection;
     private JComboBox<DataBit> dataBitsSelection;
     private JComboBox<StopBit> stopBitsSelection;
@@ -50,15 +50,15 @@ public final class PortSettingsPanel {
     }
 
     private void validate() {
-        Port selected = (Port) portSelection.getSelectedItem();
+        ComPort selected = (ComPort) portSelection.getSelectedItem();
         if (selected == null) {
             throw new FormException("Please select a port!");
         }
     }
 
-    public Port getSelectedPort() {
+    public ComPort getSelectedPort() {
         validate();
-        Port selected = (Port) portSelection.getSelectedItem();
+        ComPort selected = (ComPort) portSelection.getSelectedItem();
 
         String portName = deviceName.getText();
         if (portName == null) {
@@ -67,15 +67,15 @@ public final class PortSettingsPanel {
         }
         selected.setNickName(portName);
 
-        selected.setBaudRate(((Port.BAUDRATE) baudRateSelection.getSelectedItem()).getValue());
-        selected.setDataBits(((Port.DATABITS) dataBitsSelection.getSelectedItem()).getValue());
-        selected.setStopBits(((Port.STOPBITS) stopBitsSelection.getSelectedItem()).getValue());
-        selected.setParity(((Port.PARITY) paritySelection.getSelectedItem()).getValue());
+        selected.setBaudRate(((ComPort.BAUDRATE) baudRateSelection.getSelectedItem()).getValue());
+        selected.setDataBits(((ComPort.DATABITS) dataBitsSelection.getSelectedItem()).getValue());
+        selected.setStopBits(((ComPort.STOPBITS) stopBitsSelection.getSelectedItem()).getValue());
+        selected.setParity(((ComPort.PARITY) paritySelection.getSelectedItem()).getValue());
 
         return selected;
     }
 
-    public void setPortsList(Port[] ports) {
+    public void setPortsList(ComPort[] ports) {
         portSelection.removeAllItems();
         for (int p = 0; p < ports.length; p++) {
             portSelection.addItem(ports[p]);
@@ -113,28 +113,28 @@ public final class PortSettingsPanel {
     public void initParityList() {
         getInnerPanel().add(new JLabel("Parity :"));
         paritySelection = new JComboBox<Parity>(new Parity());
-        paritySelection.setSelectedItem(Port.PARITY.P_NONE);
+        paritySelection.setSelectedItem(ComPort.PARITY.P_NONE);
         getInnerPanel().add(paritySelection);
     }
 
     public void initStopBitsList() {
         getInnerPanel().add(new JLabel("Stop bits :"));
         stopBitsSelection = new JComboBox<StopBit>(new StopBit());
-        stopBitsSelection.setSelectedItem(Port.STOPBITS.SB_1);
+        stopBitsSelection.setSelectedItem(ComPort.STOPBITS.SB_1);
         getInnerPanel().add(stopBitsSelection);
     }
 
     public void initDataBitsList() {
         getInnerPanel().add(new JLabel("Data bits :"));
         dataBitsSelection = new JComboBox<DataBit>(new DataBit());
-        dataBitsSelection.setSelectedItem(Port.DATABITS.DB_8);
+        dataBitsSelection.setSelectedItem(ComPort.DATABITS.DB_8);
         getInnerPanel().add(dataBitsSelection);
     }
 
     public void initBaudRate() {
         getInnerPanel().add(new JLabel("Baud rate :"));
         baudRateSelection = new JComboBox<BaudRate>(new BaudRate());
-        baudRateSelection.setSelectedItem(Port.BAUDRATE.B9600);
+        baudRateSelection.setSelectedItem(ComPort.BAUDRATE.B9600);
         getInnerPanel().add(baudRateSelection);
     }
 

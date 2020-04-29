@@ -11,13 +11,13 @@ import java.util.ArrayList;
 
 public class Connector {
 
-    private ArrayList<Port> connections = new ArrayList<>();
+    private ArrayList<ComPort> connections = new ArrayList<>();
 
-    public Port[] getCommPorts() {
+    public ComPort[] getCommPorts() {
         SerialPort[] SystemPorts = SerialPort.getCommPorts();
-        Port[] ports = new Port[SystemPorts.length];
+        ComPort[] ports = new ComPort[SystemPorts.length];
         for (int i = 0; i < SystemPorts.length; i++) {
-            ports[i] = new Port(
+            ports[i] = new ComPort(
                     SystemPorts[i].getSystemPortName(),
                     SystemPorts[i].getDescriptivePortName(),
                     SystemPorts[i].getPortDescription()
@@ -27,7 +27,7 @@ public class Connector {
         return ports;
     }
 
-    public void connectToPort(Port port, Repository repository, Delimiter delimiterSequence) throws PortOpenException {
+    public void connectToPort(ComPort port, Repository repository, Delimiter delimiterSequence) throws PortOpenException {
         SerialPort comPort = SerialPort.getCommPort(port.getId());
         comPort.setComPortParameters(
                 port.getBaudRate(),
@@ -51,7 +51,7 @@ public class Connector {
 
     }
 
-    public void closePort(Port port) {
+    public void closePort(ComPort port) {
         SerialPort comPort = port.getComPort();
         comPort.removeDataListener();
         comPort.closePort();

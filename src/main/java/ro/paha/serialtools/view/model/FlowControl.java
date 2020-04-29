@@ -1,18 +1,18 @@
 package ro.paha.serialtools.view.model;
 
-import ro.paha.serialtools.Port;
+import ro.paha.serialtools.ComPort;
 
 import javax.swing.*;
 
 public class FlowControl extends AbstractListModel implements ComboBoxModel {
 
-    Port.FLOWCONTROL[] data = new Port.FLOWCONTROL[]{
-            Port.FLOWCONTROL.NONE,
-            Port.FLOWCONTROL.RTS_CTS,
-            Port.FLOWCONTROL.XON_XOFF
+    ComPort.FLOWCONTROL[] data = new ComPort.FLOWCONTROL[]{
+            ComPort.FLOWCONTROL.NONE,
+            ComPort.FLOWCONTROL.RTS_CTS,
+            ComPort.FLOWCONTROL.XON_XOFF
     };
 
-    Port.FLOWCONTROL selection = null;
+    ComPort.FLOWCONTROL selection = null;
 
     public Object getElementAt(int index) {
         return data[index];
@@ -23,7 +23,7 @@ public class FlowControl extends AbstractListModel implements ComboBoxModel {
     }
 
     public void setSelectedItem(Object anItem) {
-        selection = (Port.FLOWCONTROL) anItem;
+        selection = (ComPort.FLOWCONTROL) anItem;
     }
 
     public Object getSelectedItem() {
