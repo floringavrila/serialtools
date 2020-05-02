@@ -10,6 +10,10 @@ import org.springframework.shell.table.*;
 import org.springframework.util.StringUtils;
 import ro.paha.serialtools.ComPort;
 import ro.paha.serialtools.Connector;
+import ro.paha.serialtools.console.model.BaudRate;
+import ro.paha.serialtools.console.model.DataBits;
+import ro.paha.serialtools.console.model.Parity;
+import ro.paha.serialtools.console.model.StopBits;
 import ro.paha.serialtools.console.shell.InputReader;
 import ro.paha.serialtools.console.shell.ShellHelper;
 import ro.paha.serialtools.delimiter.LineFeed;
@@ -31,7 +35,7 @@ public class PortCommand {
     InputReader inputReader;
 
     @ShellMethod("Display available ports and status")
-    public void portList() {
+    public void list() {
         List<ComPort> ports = Arrays.asList(connector.getCommPorts());
 
         LinkedHashMap<String, Object> headers = new LinkedHashMap<>();
@@ -66,8 +70,7 @@ public class PortCommand {
     }
 
     @ShellMethod("Connect to a COMM port")
-    public void portConnect(@ShellOption({"--id"}) String portId) {
-
+    public void connect(@ShellOption({"--id"}) String portId) {
         ComPort port = null;
         for (ComPort comPort : connector.getCommPorts()) {
             if (comPort.getId().equals(portId)) {
@@ -95,88 +98,58 @@ public class PortCommand {
             }
         } while (port.getNickName().equals(""));
 
-        // 3. read user's Gender ----------------------------------------------
-        ComPort.BAUDRATE[] baudRates = new ComPort.BAUDRATE[]{
-                ComPort.BAUDRATE.B4800,
-                ComPort.BAUDRATE.B9600,
-                ComPort.BAUDRATE.B14400,
-                ComPort.BAUDRATE.B19200,
-                ComPort.BAUDRATE.B28800,
-                ComPort.BAUDRATE.B38400,
-                ComPort.BAUDRATE.B57600,
-                ComPort.BAUDRATE.B115200
-        };
-        Map<String, String> options = new HashMap<>();
-        options.put("1", ComPort.BAUDRATE.B4800.toString());
-        options.put("2", ComPort.BAUDRATE.B9600.toString());
-        options.put("3", ComPort.BAUDRATE.B14400.toString());
-        options.put("4", ComPort.BAUDRATE.B19200.toString());
-        options.put("5", ComPort.BAUDRATE.B28800.toString());
-        options.put("6", ComPort.BAUDRATE.B38400.toString());
-        options.put("7", ComPort.BAUDRATE.B57600.toString());
-        options.put("8", ComPort.BAUDRATE.B115200.toString());
-        String selectedBaudRate = inputReader.selectFromList("BaudRate", "Please enter one of the [] values", options, true, "2");
+        // 2. read BAUDRATE ----------------------------------------------
+        BaudRate baudRateModel = new BaudRate();
+        String selectedBaudRate = inputReader.selectFromList(
+                "BaudRate",
+                "Please enter one of the [] values",
+                baudRateModel.getOptions(),
+                true,
+                baudRateModel.getDefaultValue()
+        );
+        port.setBaudRate(
+                baudRateModel.getOptionValueByIndex(selectedBaudRate)
+        );
 
-        for (ComPort.BAUDRATE baudRate : baudRates) {
-            if (baudRate.toString().equals(options.get(selectedBaudRate))) {
-                port.setBaudRate(baudRate.getValue());
-            }
-        }
+        // 3. read DATABITS ----------------------------------------------
+        DataBits dataBitsModel = new DataBits();
+        String selecteddataBits = inputReader.selectFromList(
+                "DataBits",
+                "Please enter one of the [] values",
+                dataBitsModel.getOptions(),
+                true,
+                dataBitsModel.getDefaultValue()
+        );
+        port.setDataBits(
+                dataBitsModel.getOptionValueByIndex(selecteddataBits)
+        );
 
-        ComPort.DATABITS[] dataBits = new ComPort.DATABITS[]{
-                ComPort.DATABITS.DB_6,
-                ComPort.DATABITS.DB_7,
-                ComPort.DATABITS.DB_8
-        };
-        Map<String, String> dataBitsOptions = new HashMap<>();
-        options.put("1", ComPort.DATABITS.DB_6.toString());
-        options.put("2", ComPort.DATABITS.DB_7.toString());
-        options.put("3", ComPort.DATABITS.DB_8.toString());
-        String selecteddataBits = inputReader.selectFromList("DataBits", "Please enter one of the [] values", options, true, "3");
+        // 4. read STOPBITS ----------------------------------------------
+        StopBits stopBitsModel = new StopBits();
 
-        for (ComPort.DATABITS bit : dataBits) {
-            if (bit.toString().equals(dataBitsOptions.get(selecteddataBits))) {
-                port.setDataBits(bit.getValue());
-            }
-        }
+        String selectedStopBits = inputReader.selectFromList(
+                "StopBits",
+                "Please enter one of the [] values",
+                stopBitsModel.getOptions(),
+                true,
+                stopBitsModel.getDefaultValue()
+        );
+        port.setStopBits(
+                stopBitsModel.getOptionValueByIndex(selectedStopBits)
+        );
 
-        ComPort.STOPBITS[] stopBits = new ComPort.STOPBITS[]{
-                ComPort.STOPBITS.SB_1,
-                ComPort.STOPBITS.SB_1_5,
-                ComPort.STOPBITS.SB_2
-        };
-        Map<String, String> stopBitsOptions = new HashMap<>();
-        options.put("1", ComPort.STOPBITS.SB_1.toString());
-        options.put("2", ComPort.STOPBITS.SB_1_5.toString());
-        options.put("3", ComPort.STOPBITS.SB_2.toString());
-        String selectedStopBits = inputReader.selectFromList("StopBits", "Please enter one of the [] values", options, true, "1");
-
-        for (ComPort.STOPBITS bit : stopBits) {
-            if (bit.toString().equals(stopBitsOptions.get(selectedStopBits))) {
-                port.setStopBits(bit.getValue());
-            }
-        }
-
-        ComPort.PARITY[] parity = new ComPort.PARITY[]{
-                ComPort.PARITY.P_NONE,
-                ComPort.PARITY.P_EVEN,
-                ComPort.PARITY.P_ODD,
-                ComPort.PARITY.P_MARK,
-                ComPort.PARITY.P_SPACE
-        };
-        Map<String, String> parityOptions = new HashMap<>();
-        options.put("1", ComPort.PARITY.P_NONE.toString());
-        options.put("2", ComPort.PARITY.P_EVEN.toString());
-        options.put("3", ComPort.PARITY.P_ODD.toString());
-        options.put("4", ComPort.PARITY.P_MARK.toString());
-        options.put("5", ComPort.PARITY.P_SPACE.toString());
-        String selectedParity = inputReader.selectFromList("Parity", "Please enter one of the [] values", options, true, "1");
-
-        for (ComPort.PARITY bit : parity) {
-            if (bit.toString().equals(parityOptions.get(selectedParity))) {
-                port.setParity(bit.getValue());
-            }
-        }
+        // 5. read PARITY ----------------------------------------------
+        Parity parityModel = new Parity();
+        String selectedParity = inputReader.selectFromList(
+                "Parity",
+                "Please enter one of the [] values",
+                parityModel.getOptions(),
+                true,
+                parityModel.getDefaultValue()
+        );
+        port.setParity(
+                parityModel.getOptionValueByIndex(selectedParity)
+        );
 
         Console repo = new Console();
         repo.open();
