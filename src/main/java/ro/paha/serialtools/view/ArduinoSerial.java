@@ -15,6 +15,7 @@ import ro.paha.serialtools.Connector;
 import ro.paha.serialtools.delimiter.Delimiter;
 import ro.paha.serialtools.delimiter.LineFeed;
 import ro.paha.serialtools.repository.Console;
+import ro.paha.serialtools.repository.Database;
 import ro.paha.serialtools.repository.Repository;
 
 public class ArduinoSerial {

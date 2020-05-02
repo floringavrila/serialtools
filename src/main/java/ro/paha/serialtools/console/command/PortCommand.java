@@ -68,8 +68,9 @@ public class PortCommand {
                 };
             }
         });
-        tableBuilder.addInnerBorder(BorderStyle.fancy_light);
-        tableBuilder.addHeaderBorder(BorderStyle.fancy_double);
+
+
+        tableBuilder.addFullBorder(BorderStyle.oldschool);
         shellHelper.print(tableBuilder.build().render(80));
     }
 
@@ -196,7 +197,7 @@ public class PortCommand {
                     }
                 }
         );
-        shellHelper.printError("Started to listen! press ENTER to abort!");
+        shellHelper.printError("Started to listen! press any key + ENTER to abort!");
         do {
             String someText = inputReader.prompt("");
             if (StringUtils.hasText(someText)) {
