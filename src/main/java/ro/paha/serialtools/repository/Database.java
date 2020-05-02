@@ -7,7 +7,7 @@ import java.sql.PreparedStatement;
 import java.util.Properties;
 
 
-public class Database implements Repository {
+public class  Database extends EventEmitter {
 
     Connection dbConnection;
 
@@ -30,6 +30,7 @@ public class Database implements Repository {
     }
 
     public void write(String message) {
+        super.write(message);
         String insertTableSQL = "INSERT INTO logs"
                 + "(message) VALUES "
                 + "(?)";

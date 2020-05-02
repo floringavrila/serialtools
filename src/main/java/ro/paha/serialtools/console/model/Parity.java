@@ -39,3 +39,4 @@ public class Parity {
         return 0;
     }
 }
+

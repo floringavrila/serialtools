@@ -43,6 +43,7 @@ public class InputReader {
         if (StringUtils.isEmpty(answer)) {
             return defaultValue;
         }
+
         return answer;
     }
 
@@ -77,6 +78,7 @@ public class InputReader {
         if (StringUtils.isEmpty(answer) && allowedAnswers.contains("")) {
             return defaultValue;
         }
+
         return answer;
     }
 
@@ -89,6 +91,7 @@ public class InputReader {
             if(it.next().equalsIgnoreCase(s))
                 return true;
         }
+
         return false;
     }
 }

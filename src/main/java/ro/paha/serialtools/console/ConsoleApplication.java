@@ -1,8 +1,6 @@
 package ro.paha.serialtools.console;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jmx.JmxAutoConfiguration;
-import ro.paha.serialtools.Connector;
 import org.jline.utils.AttributedString;
 import org.jline.utils.AttributedStyle;
 

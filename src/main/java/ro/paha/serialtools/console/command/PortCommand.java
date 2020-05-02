@@ -17,10 +17,12 @@ import ro.paha.serialtools.console.model.StopBits;
 import ro.paha.serialtools.console.shell.InputReader;
 import ro.paha.serialtools.console.shell.ShellHelper;
 import ro.paha.serialtools.delimiter.LineFeed;
-import ro.paha.serialtools.repository.Console;
+import ro.paha.serialtools.repository.NullWriter;
+import ro.paha.serialtools.repository.Repository;
 import ro.paha.serialtools.view.PortOpenException;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @ShellComponent
 public class PortCommand {
@@ -34,7 +36,9 @@ public class PortCommand {
     @Autowired
     InputReader inputReader;
 
-    @ShellMethod("Display available ports and status")
+    private AtomicBoolean listenEnabled = new AtomicBoolean(true);
+
+    @ShellMethod("Display available Serial Ports and status")
     public void list() {
         List<ComPort> ports = Arrays.asList(connector.getCommPorts());
 
@@ -69,22 +73,27 @@ public class PortCommand {
         shellHelper.print(tableBuilder.build().render(80));
     }
 
-    @ShellMethod("Connect to a COMM port")
+    @ShellMethod("Connect to a Serial Port")
     public void connect(@ShellOption({"--id"}) String portId) {
         ComPort port = null;
         for (ComPort comPort : connector.getCommPorts()) {
             if (comPort.getId().equals(portId)) {
-                port = new ComPort(
-                        comPort.getId(),
-                        comPort.getName(),
-                        comPort.getDescription()
-                );
+                port = comPort;
             }
         }
         if (port == null) {
             shellHelper.printError(
                     String.format("Invalid port ID='%s' --> ABORTING", portId)
             );
+
+            return;
+        }
+
+        if (port.getIsConnected()) {
+            shellHelper.printError(
+                    String.format("Port already connected ID='%s' --> ABORTING", portId)
+            );
+
             return;
         }
 
@@ -151,8 +160,8 @@ public class PortCommand {
                 parityModel.getOptionValueByIndex(selectedParity)
         );
 
-        Console repo = new Console();
-        repo.open();
+        NullWriter repo = new NullWriter();
+        port.setRepository(repo);
         try {
             connector.connectToPort(port, repo, new LineFeed());
             shellHelper.printSuccess("Connected to port id=" + port.getId());
@@ -166,4 +175,65 @@ public class PortCommand {
             );
         }
     }
+
+    @ShellMethod("Show received data of a Serial Port")
+    public void listen(@ShellOption({"--id"}) String portId) {
+        this.listenEnabled.set(true);
+        ComPort port = connector.getConnectedPortModel(portId);
+        if (port == null) {
+            shellHelper.printError(
+                    String.format("Port is not yet configured ID='%s' --> ABORTING", portId)
+            );
+            return;
+        }
+        port.getRepository().setOnLineReceivedListener(
+                new Repository.OnLineReceivedListener() {
+                    @Override
+                    public void onLineReceived(String line) {
+                        if(listenEnabled.get()){
+                            shellHelper.printInfo(line);
+                        }
+                    }
+                }
+        );
+        shellHelper.printError("Started to listen! press ENTER to abort!");
+        do {
+            String someText = inputReader.prompt("");
+            if (StringUtils.hasText(someText)) {
+                this.listenEnabled.set(false);
+            }
+        } while (this.listenEnabled.get());
+    }
+
+    @ShellMethod("Disconnect from a Serial Port")
+    public void disconnect(@ShellOption({"--id"}) String portId) {
+        ComPort port = null;
+        for (ComPort comPort : connector.getCommPorts()) {
+            if (comPort.getId().equals(portId)) {
+                port = comPort;
+            }
+        }
+        if (port == null) {
+            shellHelper.printError(
+                    String.format("Invalid port ID='%s' --> ABORTING", portId)
+            );
+
+            return;
+        }
+
+        if (!port.getIsConnected()) {
+            shellHelper.printError(
+                    String.format("Port already disconnected ID='%s' --> ABORTING", portId)
+            );
+
+            return;
+        }
+
+        connector.closePort(port);
+
+        shellHelper.printSuccess(
+                String.format("Disconnected from Port ID='%s'", port.getId())
+        );
+    }
 }
+

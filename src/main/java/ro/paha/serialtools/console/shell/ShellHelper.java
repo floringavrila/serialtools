@@ -25,6 +25,13 @@ public class ShellHelper {
         this.terminal = terminal;
     }
 
+    /**
+     * Construct colored message in the given color.
+     *
+     * @param message message to return
+     * @param color   color to print
+     * @return colored message
+     */
     public String getColored(String message, PromptColor color) {
         return (new AttributedStringBuilder()).append(message, AttributedStyle.DEFAULT.foreground(color.toJlineAttributedStyle())).toAnsi();
     }
@@ -45,6 +52,13 @@ public class ShellHelper {
         return getColored(message, PromptColor.valueOf(errorColor));
     }
 
+    //--- Print methods -------------------------------------------------------
+
+    /**
+     * Print message to the console in the default color.
+     *
+     * @param message message to print
+     */
     public void print(String message) {
         print(message, null);
     }

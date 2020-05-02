@@ -17,11 +17,16 @@ public class Connector {
         SerialPort[] SystemPorts = SerialPort.getCommPorts();
         ComPort[] ports = new ComPort[SystemPorts.length];
         for (int i = 0; i < SystemPorts.length; i++) {
-            ports[i] = new ComPort(
-                    SystemPorts[i].getSystemPortName(),
-                    SystemPorts[i].getDescriptivePortName(),
-                    SystemPorts[i].getPortDescription()
-            );
+            ComPort alreadyConnected = this.getConnectedPortModel(SystemPorts[i].getSystemPortName());
+            if (alreadyConnected != null) {
+                ports[i] = alreadyConnected;
+            } else {
+                ports[i] = new ComPort(
+                        SystemPorts[i].getSystemPortName(),
+                        SystemPorts[i].getDescriptivePortName(),
+                        SystemPorts[i].getPortDescription()
+                );
+            }
         }
 
         return ports;
@@ -51,21 +56,30 @@ public class Connector {
 
     }
 
+    public ComPort getConnectedPortModel(String portId) {
+        for (ComPort port : connections) {
+            if (port.getId().equals(portId)) {
+                return port;
+            }
+        }
+
+        return null;
+    }
+
     public void closePort(ComPort port) {
-        SerialPort comPort = port.getComPort();
-        comPort.removeDataListener();
-        comPort.closePort();
+        cleanUpPort(port);
         connections.remove(port);
-        port.removeComPort();
     }
 
     public void closeAll() {
-        connections.forEach((port) -> {
-            SerialPort comPort = SerialPort.getCommPort(port.getId());
-            comPort.removeDataListener();
-            comPort.closePort();
-            connections.remove(port);
-            port.removeComPort();
-        });
+        connections.forEach(this::cleanUpPort);
+        connections.clear();
+    }
+
+    private void cleanUpPort(ComPort port) {
+        SerialPort comPort = port.getComPort();
+        comPort.removeDataListener();
+        comPort.closePort();
+        port.removeComPort();
     }
 }

@@ -1,6 +1,6 @@
 package ro.paha.serialtools.repository;
 
-public class Console extends EventEmitter {
+public class NullWriter extends EventEmitter {
     @Override
     public boolean open() {
         return true;
@@ -8,7 +8,6 @@ public class Console extends EventEmitter {
 
     public void write(String message) {
         super.write(message);
-        System.out.println(message);
     }
 
     @Override

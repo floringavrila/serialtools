@@ -46,3 +46,4 @@ public class BaudRate {
         return 0;
     }
 }
+

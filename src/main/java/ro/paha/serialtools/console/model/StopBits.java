@@ -36,3 +36,4 @@ public class StopBits {
         return 0;
     }
 }
+
