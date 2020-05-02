@@ -56,6 +56,7 @@ public class Connector {
         comPort.removeDataListener();
         comPort.closePort();
         connections.remove(port);
+        port.removeComPort();
     }
 
     public void closeAll() {
@@ -64,6 +65,7 @@ public class Connector {
             comPort.removeDataListener();
             comPort.closePort();
             connections.remove(port);
+            port.removeComPort();
         });
     }
 }

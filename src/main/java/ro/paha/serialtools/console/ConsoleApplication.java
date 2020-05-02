@@ -1,5 +1,6 @@
 package ro.paha.serialtools.console;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jmx.JmxAutoConfiguration;
 import ro.paha.serialtools.Connector;
 import org.jline.utils.AttributedString;
@@ -12,11 +13,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.shell.jline.PromptProvider;
 
 @SpringBootApplication(exclude = {JmxAutoConfiguration.class})
-public class Console {
-    private static Connector scm;
+public class ConsoleApplication {
 
     public static void main(String[] args) throws Exception {
-        ConfigurableApplicationContext context = SpringApplication.run(Console.class, args);
+        ConfigurableApplicationContext context = SpringApplication.run(ConsoleApplication.class, args);
     }
 
     @Bean

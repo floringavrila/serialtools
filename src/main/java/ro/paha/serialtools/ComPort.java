@@ -13,11 +13,13 @@ public class ComPort {
     private int StopBits;
     private int Parity;
     private SerialPort comPort;
+    private boolean isConnected;
 
     public ComPort(String Id, String Name, String Description) {
         this.Id = Id;
         this.name = Name;
         this.Description = Description;
+        this.isConnected = false;
     }
 
     public SerialPort getComPort() {
@@ -26,6 +28,16 @@ public class ComPort {
 
     public void setComPort(SerialPort comPort) {
         this.comPort = comPort;
+        this.isConnected = true;
+    }
+
+    public void removeComPort() {
+        this.comPort = null;
+        this.isConnected = false;
+    }
+
+    public boolean getIsConnected() {
+        return isConnected;
     }
 
     public String getId() {

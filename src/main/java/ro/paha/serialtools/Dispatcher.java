@@ -1,13 +1,13 @@
 package ro.paha.serialtools;
 
-import ro.paha.serialtools.console.Console;
+import ro.paha.serialtools.console.ConsoleApplication;
 import ro.paha.serialtools.view.ArduinoSerial;
 import java.lang.reflect.InvocationTargetException;
 
 public class Dispatcher {
 
     private static Class<ArduinoSerial> guiApp = ArduinoSerial.class;
-    private static Class<Console> consoleApp = Console.class;
+    private static Class<ConsoleApplication> consoleApp = ConsoleApplication.class;
 
     public static void main(String[] args) {
         try {
