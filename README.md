@@ -3,7 +3,7 @@
 _A serial port data logger GUI and Shell application_
 
 
-This application can read and log serial data from serial serial ports.
+This application can read and log serial data from serial ports.
 
 GUI: It is a Swing application having its backend based on [jSerialComm](https://github.com/Fazecast/jSerialComm).
 
