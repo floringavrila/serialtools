@@ -7,7 +7,7 @@ import java.sql.PreparedStatement;
 import java.util.Properties;
 
 
-public class Database implements Repository {
+public class  Database implements Repository {
 
     Connection dbConnection;
 

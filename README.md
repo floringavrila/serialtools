@@ -1,11 +1,19 @@
-# SerialTools
+# Java Serial Tools
 
-_A serial port logger JAVA Swing application_
+_A serial port data logger GUI and Shell application_
 
-This application was initially developed for logging data sent from Arduino.
 
-It is a Swing application having its backend based on [jSerialComm](https://github.com/Fazecast/jSerialComm).
+This application can read and log serial data from serial serial ports.
 
+GUI: It is a Swing application having its backend based on [jSerialComm](https://github.com/Fazecast/jSerialComm).
+
+SHELL: It is made with Spring Shell 
 ## Usage
+
+```bash
+java -jar serialtools-1.1.jar
+java -jar serialtools-1.1.jar shell
+```
+
 
 For usage examples, please refer to the [Usage wiki](https://www.thingsconnected.io/java-serial-tools).

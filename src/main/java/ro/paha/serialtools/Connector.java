@@ -2,8 +2,6 @@ package ro.paha.serialtools;
 
 
 import com.fazecast.jSerialComm.SerialPort;
-import ro.paha.serialtools.delimiter.Delimiter;
-import ro.paha.serialtools.repository.Repository;
 import ro.paha.serialtools.view.PortOpenException;
 
 import java.util.ArrayList;
@@ -11,59 +9,68 @@ import java.util.ArrayList;
 
 public class Connector {
 
-    private ArrayList<Port> connections = new ArrayList<>();
+    private ArrayList<ComPort> connections = new ArrayList<>();
 
-    public Port[] getCommPorts() {
+    public ComPort[] getCommPorts() {
         SerialPort[] SystemPorts = SerialPort.getCommPorts();
-        Port[] ports = new Port[SystemPorts.length];
+        ComPort[] ports = new ComPort[SystemPorts.length];
         for (int i = 0; i < SystemPorts.length; i++) {
-            ports[i] = new Port(
-                    SystemPorts[i].getSystemPortName(),
-                    SystemPorts[i].getDescriptivePortName(),
-                    SystemPorts[i].getPortDescription()
-            );
+            ComPort alreadyConnected = this.getConnectedPortModel(SystemPorts[i].getSystemPortName());
+            if (alreadyConnected != null) {
+                ports[i] = alreadyConnected;
+            } else {
+                ports[i] = new ComPort(
+                        SystemPorts[i].getSystemPortName(),
+                        SystemPorts[i].getDescriptivePortName(),
+                        SystemPorts[i].getPortDescription()
+                );
+            }
         }
 
         return ports;
     }
 
-    public void connectToPort(Port port, Repository repository, Delimiter delimiterSequence) throws PortOpenException {
-        SerialPort comPort = SerialPort.getCommPort(port.getId());
-        comPort.setComPortParameters(
+    public void connectToPort(ComPort port) throws PortOpenException {
+        SerialPort serialPort = SerialPort.getCommPort(port.getId());
+        serialPort.setComPortParameters(
                 port.getBaudRate(),
                 port.getDataBits(),
                 port.getStopBits(),
                 port.getParity()
         );
-        comPort.setFlowControl(SerialPort.FLOW_CONTROL_XONXOFF_IN_ENABLED | SerialPort.FLOW_CONTROL_XONXOFF_OUT_ENABLED);
-        if (comPort.openPort()) {
-            // each port will have it's own listener
-            DataReceivedListener listener = new DataReceivedListener(
-                    delimiterSequence,
-                    repository
-            );
-            comPort.addDataListener(listener);
-            port.setComPort(comPort);
+        serialPort.setFlowControl(SerialPort.FLOW_CONTROL_XONXOFF_IN_ENABLED | SerialPort.FLOW_CONTROL_XONXOFF_OUT_ENABLED);
+        if (serialPort.openPort()) {
+            port.setSerialPort(serialPort);
             connections.add(port);
         } else {
             throw new PortOpenException("Error opening " + port.getName() + ".(Port busy)");
         }
-
     }
 
-    public void closePort(Port port) {
-        SerialPort comPort = port.getComPort();
-        comPort.removeDataListener();
-        comPort.closePort();
+    public ComPort getConnectedPortModel(String portId) {
+        for (ComPort port : connections) {
+            if (port.getId().equals(portId)) {
+                return port;
+            }
+        }
+
+        return null;
+    }
+
+    public void closePort(ComPort port) {
+        cleanUpPort(port);
         connections.remove(port);
     }
 
     public void closeAll() {
-        connections.forEach((port) -> {
-            SerialPort comPort = SerialPort.getCommPort(port.getId());
-            comPort.removeDataListener();
-            comPort.closePort();
-            connections.remove(port);
-        });
+        connections.forEach(this::cleanUpPort);
+        connections.clear();
+    }
+
+    private void cleanUpPort(ComPort port) {
+        SerialPort serialPort = port.getSerialPort();
+        serialPort.removeDataListener();
+        serialPort.closePort();
+        port.removeComPort();
     }
 }

@@ -1,10 +1,11 @@
 plugins {
+    id 'org.springframework.boot' version '2.1.13.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.9.RELEASE'
     id 'java'
 }
 
 group 'ro.paha'
-version '1.0-SNAPSHOT'
-
+version '1.1-SNAPSHOT'
 sourceCompatibility = 1.8
 
 repositories {
@@ -12,18 +13,16 @@ repositories {
 }
 
 dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testCompile group: 'junit', name: 'junit', version: '4.12'
     compile 'com.fazecast:jSerialComm:[2.0.0,3.0.0)'
     compile 'mysql:mysql-connector-java:8.0.17'
+    compile 'org.springframework.shell:spring-shell-starter:2.0.0.RELEASE'
 }
 
-jar {
-   manifest {
-      attributes (
-              'Main-Class': 'ro.paha.serialtools.view.ArduinoSerial'
-      )
-   }
-   from configurations.runtime.collect { zipTree(it) }
+springBoot {
+    mainClassName = 'ro.paha.serialtools.Dispatcher'
 }
 
 

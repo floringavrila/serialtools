@@ -2,7 +2,7 @@ package ro.paha.serialtools;
 
 import com.fazecast.jSerialComm.SerialPort;
 
-public class Port {
+public class ComPort {
 
     private String Id;
     private String name;
@@ -12,20 +12,32 @@ public class Port {
     private int DataBits;
     private int StopBits;
     private int Parity;
-    private SerialPort comPort;
+    private SerialPort serialPort;
+    private boolean isConnected;
 
-    public Port(String Id, String Name, String Description) {
+    public ComPort(String Id, String Name, String Description) {
         this.Id = Id;
         this.name = Name;
         this.Description = Description;
+        this.isConnected = false;
     }
 
-    public SerialPort getComPort() {
-        return comPort;
+    public SerialPort getSerialPort() {
+        return serialPort;
     }
 
-    public void setComPort(SerialPort comPort) {
-        this.comPort = comPort;
+    public void setSerialPort(SerialPort serialPort) {
+        this.serialPort = serialPort;
+        this.isConnected = true;
+    }
+
+    public void removeComPort() {
+        this.serialPort = null;
+        this.isConnected = false;
+    }
+
+    public boolean getIsConnected() {
+        return isConnected;
     }
 
     public String getId() {

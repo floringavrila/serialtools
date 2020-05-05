@@ -1,18 +1,18 @@
 package ro.paha.serialtools.view.model;
 
-import ro.paha.serialtools.Port;
+import ro.paha.serialtools.ComPort;
 
 import javax.swing.*;
 
 public class StopBit extends AbstractListModel implements ComboBoxModel {
 
-    Port.STOPBITS[] data = new Port.STOPBITS[]{
-            Port.STOPBITS.SB_1,
-            Port.STOPBITS.SB_1_5,
-            Port.STOPBITS.SB_2
+    ComPort.STOPBITS[] data = new ComPort.STOPBITS[]{
+            ComPort.STOPBITS.SB_1,
+            ComPort.STOPBITS.SB_1_5,
+            ComPort.STOPBITS.SB_2
     };
 
-    Port.STOPBITS selection = null;
+    ComPort.STOPBITS selection = null;
 
     public Object getElementAt(int index) {
         return data[index];
@@ -23,7 +23,7 @@ public class StopBit extends AbstractListModel implements ComboBoxModel {
     }
 
     public void setSelectedItem(Object anItem) {
-        selection = (Port.STOPBITS) anItem;
+        selection = (ComPort.STOPBITS) anItem;
     }
 
     public Object getSelectedItem() {

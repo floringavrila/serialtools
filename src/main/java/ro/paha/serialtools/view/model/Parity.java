@@ -1,20 +1,20 @@
 package ro.paha.serialtools.view.model;
 
-import ro.paha.serialtools.Port;
+import ro.paha.serialtools.ComPort;
 
 import javax.swing.*;
 
 public class Parity extends AbstractListModel implements ComboBoxModel {
 
-    Port.PARITY[] data = new Port.PARITY[]{
-            Port.PARITY.P_NONE,
-            Port.PARITY.P_EVEN,
-            Port.PARITY.P_ODD,
-            Port.PARITY.P_MARK,
-            Port.PARITY.P_SPACE
+    ComPort.PARITY[] data = new ComPort.PARITY[]{
+            ComPort.PARITY.P_NONE,
+            ComPort.PARITY.P_EVEN,
+            ComPort.PARITY.P_ODD,
+            ComPort.PARITY.P_MARK,
+            ComPort.PARITY.P_SPACE
     };
 
-    Port.PARITY selection = null;
+    ComPort.PARITY selection = null;
 
     public Object getElementAt(int index) {
         return data[index];
@@ -25,7 +25,7 @@ public class Parity extends AbstractListModel implements ComboBoxModel {
     }
 
     public void setSelectedItem(Object anItem) {
-        selection = (Port.PARITY) anItem;
+        selection = (ComPort.PARITY) anItem;
     }
 
     public Object getSelectedItem() {
