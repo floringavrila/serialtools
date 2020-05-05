@@ -2,8 +2,6 @@ package ro.paha.serialtools;
 
 
 import com.fazecast.jSerialComm.SerialPort;
-import ro.paha.serialtools.delimiter.Delimiter;
-import ro.paha.serialtools.repository.Repository;
 import ro.paha.serialtools.view.PortOpenException;
 
 import java.util.ArrayList;
@@ -32,28 +30,21 @@ public class Connector {
         return ports;
     }
 
-    public void connectToPort(ComPort port, Repository repository, Delimiter delimiterSequence) throws PortOpenException {
-        SerialPort comPort = SerialPort.getCommPort(port.getId());
-        comPort.setComPortParameters(
+    public void connectToPort(ComPort port) throws PortOpenException {
+        SerialPort serialPort = SerialPort.getCommPort(port.getId());
+        serialPort.setComPortParameters(
                 port.getBaudRate(),
                 port.getDataBits(),
                 port.getStopBits(),
                 port.getParity()
         );
-        comPort.setFlowControl(SerialPort.FLOW_CONTROL_XONXOFF_IN_ENABLED | SerialPort.FLOW_CONTROL_XONXOFF_OUT_ENABLED);
-        if (comPort.openPort()) {
-            // each port will have it's own listener
-            DataReceivedListener listener = new DataReceivedListener(
-                    delimiterSequence,
-                    repository
-            );
-            comPort.addDataListener(listener);
-            port.setComPort(comPort);
+        serialPort.setFlowControl(SerialPort.FLOW_CONTROL_XONXOFF_IN_ENABLED | SerialPort.FLOW_CONTROL_XONXOFF_OUT_ENABLED);
+        if (serialPort.openPort()) {
+            port.setSerialPort(serialPort);
             connections.add(port);
         } else {
             throw new PortOpenException("Error opening " + port.getName() + ".(Port busy)");
         }
-
     }
 
     public ComPort getConnectedPortModel(String portId) {
@@ -77,9 +68,9 @@ public class Connector {
     }
 
     private void cleanUpPort(ComPort port) {
-        SerialPort comPort = port.getComPort();
-        comPort.removeDataListener();
-        comPort.closePort();
+        SerialPort serialPort = port.getSerialPort();
+        serialPort.removeDataListener();
+        serialPort.closePort();
         port.removeComPort();
     }
 }

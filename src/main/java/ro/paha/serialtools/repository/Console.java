@@ -1,13 +1,12 @@
 package ro.paha.serialtools.repository;
 
-public class Console extends EventEmitter {
+public class Console implements Repository {
     @Override
     public boolean open() {
         return true;
     }
 
     public void write(String message) {
-        super.write(message);
         System.out.println(message);
     }
 

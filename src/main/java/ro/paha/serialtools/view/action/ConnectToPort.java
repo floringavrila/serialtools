@@ -1,6 +1,8 @@
 package ro.paha.serialtools.view.action;
 
+import ro.paha.serialtools.ComPort;
 import ro.paha.serialtools.Connector;
+import ro.paha.serialtools.DataReceivedListener;
 import ro.paha.serialtools.delimiter.Delimiter;
 import ro.paha.serialtools.repository.Repository;
 import ro.paha.serialtools.view.FormException;
@@ -56,7 +58,12 @@ public class ConnectToPort extends AbstractAction {
     }
 
     private void connectToPort() throws PortOpenException {
-        conector.connectToPort(settingsPanel.getSelectedPort(), repository, delimiter);
+        ComPort port = settingsPanel.getSelectedPort();
+        conector.connectToPort(port);
+        port.getSerialPort().addDataListener(new DataReceivedListener(
+                delimiter,
+                repository
+        ));
     }
 
     private void disconnectFromPort() {

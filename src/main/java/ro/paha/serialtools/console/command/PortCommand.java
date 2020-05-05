@@ -10,6 +10,7 @@ import org.springframework.shell.table.*;
 import org.springframework.util.StringUtils;
 import ro.paha.serialtools.ComPort;
 import ro.paha.serialtools.Connector;
+import ro.paha.serialtools.DataReceivedListener;
 import ro.paha.serialtools.console.model.BaudRate;
 import ro.paha.serialtools.console.model.DataBits;
 import ro.paha.serialtools.console.model.Parity;
@@ -17,8 +18,7 @@ import ro.paha.serialtools.console.model.StopBits;
 import ro.paha.serialtools.console.shell.InputReader;
 import ro.paha.serialtools.console.shell.ShellHelper;
 import ro.paha.serialtools.delimiter.LineFeed;
-import ro.paha.serialtools.repository.NullWriter;
-import ro.paha.serialtools.repository.Repository;
+import ro.paha.serialtools.repository.ShellLogger;
 import ro.paha.serialtools.view.PortOpenException;
 
 import java.util.*;
@@ -161,10 +161,8 @@ public class PortCommand {
                 parityModel.getOptionValueByIndex(selectedParity)
         );
 
-        NullWriter repo = new NullWriter();
-        port.setRepository(repo);
         try {
-            connector.connectToPort(port, repo, new LineFeed());
+            connector.connectToPort(port);
             shellHelper.printSuccess("Connected to port id=" + port.getId());
         } catch (PortOpenException e) {
             shellHelper.printError(
@@ -187,20 +185,16 @@ public class PortCommand {
             );
             return;
         }
-        port.getRepository().setOnLineReceivedListener(
-                new Repository.OnLineReceivedListener() {
-                    @Override
-                    public void onLineReceived(String line) {
-                        if(listenEnabled.get()){
-                            shellHelper.printInfo(line);
-                        }
-                    }
-                }
-        );
+
+        port.getSerialPort().addDataListener(new DataReceivedListener(
+                new LineFeed(),
+                new ShellLogger()
+        ));
         shellHelper.printError("Started to listen! press any key + ENTER to abort!");
         do {
             String someText = inputReader.prompt("");
             if (StringUtils.hasText(someText)) {
+                port.getSerialPort().removeDataListener();
                 this.listenEnabled.set(false);
             }
         } while (this.listenEnabled.get());

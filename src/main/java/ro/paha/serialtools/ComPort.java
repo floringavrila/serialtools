@@ -1,7 +1,6 @@
 package ro.paha.serialtools;
 
 import com.fazecast.jSerialComm.SerialPort;
-import ro.paha.serialtools.repository.Repository;
 
 public class ComPort {
 
@@ -13,9 +12,8 @@ public class ComPort {
     private int DataBits;
     private int StopBits;
     private int Parity;
-    private SerialPort comPort;
+    private SerialPort serialPort;
     private boolean isConnected;
-    private Repository repository;
 
     public ComPort(String Id, String Name, String Description) {
         this.Id = Id;
@@ -24,17 +22,17 @@ public class ComPort {
         this.isConnected = false;
     }
 
-    public SerialPort getComPort() {
-        return comPort;
+    public SerialPort getSerialPort() {
+        return serialPort;
     }
 
-    public void setComPort(SerialPort comPort) {
-        this.comPort = comPort;
+    public void setSerialPort(SerialPort serialPort) {
+        this.serialPort = serialPort;
         this.isConnected = true;
     }
 
     public void removeComPort() {
-        this.comPort = null;
+        this.serialPort = null;
         this.isConnected = false;
     }
 
@@ -92,14 +90,6 @@ public class ComPort {
 
     public void setParity(int parity) {
         Parity = parity;
-    }
-
-    public Repository getRepository() {
-        return repository;
-    }
-
-    public void setRepository(Repository repository) {
-        this.repository = repository;
     }
 
     public String toString() {
